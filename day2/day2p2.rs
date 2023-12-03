@@ -30,6 +30,10 @@ impl Set {
         }
         set
     }
+
+    fn power(&self) -> u32 {
+        self.green * self.blue * self.red
+    }
 }
 
 struct Game {
@@ -55,29 +59,30 @@ impl Game {
     }
 }
 
-fn get_id(game: &str, target: &Set) -> u32 {
+fn get_power(game: &str) -> u32 {
     let game = Game::parse_game(game);
+    let mut fewes_cubes = Set::new();
     for hint in game.hints {
-        if hint.green > target.green || hint.blue > target.blue || hint.red > target.red {
-            return 0;
+        if hint.green > fewes_cubes.green {
+            fewes_cubes.green = hint.green;
+        }
+        if hint.blue > fewes_cubes.blue {
+            fewes_cubes.blue = hint.blue;
+        }
+        if hint.red > fewes_cubes.red {
+            fewes_cubes.red = hint.red;
         }
     }
 
-    game.id
+    fewes_cubes.power()
 }
 
 fn main() {
     let mut sum = 0;
     let document = fs::read_to_string("day2.in").unwrap();
 
-    let target = Set {
-        green: 13,
-        blue: 14,
-        red: 12,
-    };
-
     for game in document.lines() {
-        sum += get_id(game, &target);
+        sum += get_power(game);
     }
 
     println!("{}", sum);
