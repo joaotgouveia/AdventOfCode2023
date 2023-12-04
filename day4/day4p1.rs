@@ -7,13 +7,11 @@ fn parse_card(card: &str) -> (Vec<u32>, Vec<u32>) {
 
     (
         card[0]
-            .split(" ")
-            .filter(|x| x.parse::<u32>().is_ok())
+            .split_whitespace()
             .map(|x| x.parse().unwrap())
             .collect::<Vec<u32>>(),
         card[1]
-            .split(" ")
-            .filter(|x| x.parse::<u32>().is_ok())
+            .split_whitespace()
             .map(|x| x.parse().unwrap())
             .collect::<Vec<u32>>(),
     )
