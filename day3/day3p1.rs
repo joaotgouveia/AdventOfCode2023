@@ -47,8 +47,8 @@ fn extract_square(schematic: &Vec<&str>, center: Point) -> Vec<String> {
     lines
 }
 
-fn parse_numbers(line_org: &str) -> Vec<u32> {
-    let line = line_org.split(|x: char| !x.is_numeric());
+fn parse_numbers(line: &str) -> Vec<u32> {
+    let line = line.split(|x: char| !x.is_numeric());
     let mut numbers: Vec<u32> = Vec::new();
     for symbol in line {
         let parsed = symbol.parse::<u32>();
