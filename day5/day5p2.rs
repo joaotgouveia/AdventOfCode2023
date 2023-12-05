@@ -48,17 +48,18 @@ fn convert_number(num: u64, map: &Vec<Vec<u64>>) -> u64 {
     num
 }
 
-fn find_closest(almanac: Almanac) -> u64 {
-    let seed_count = almanac.seeds.len();
-    let mut locations: Vec<u64> = almanac.seeds;
-
-    for map in almanac.maps {
-        for i in 0..seed_count {
-            locations[i] = convert_number(locations[i], &map);
+fn find_closest(maps: &[Vec<Vec<u64>>; 7], start: u64, end: u64) -> u64 {
+    let mut min = 0;
+    for map in maps {
+        for seed in start..end {
+            let location = convert_number(seed, map);
+            if location < min || min == 0 {
+                min = location;
+            }
         }
     }
 
-    *locations.iter().min().unwrap()
+    min
 }
 
 fn main() {
@@ -69,6 +70,15 @@ fn main() {
         .filter(|x| !x.is_empty())
         .collect();
     let almanac = Almanac::parse_almanac(maps);
+    let ranges = almanac.seeds;
+    let range_count = ranges.len() / 2;
 
-    println!("{}", find_closest(almanac));
+    let mut locations: Vec<u64> = Vec::new();
+    for i in 0..range_count {
+        let start = ranges[2 * i];
+        let end = start + ranges[2 * i + 1];
+        locations.push(find_closest(&almanac.maps, start, end));
+    }
+
+    println!("{}", locations.iter().min().unwrap());
 }
