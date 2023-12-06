@@ -1,4 +1,6 @@
 use std::fs;
+use std::thread;
+use std::thread::JoinHandle;
 
 struct Almanac {
     seeds: Vec<u64>,
@@ -48,17 +50,17 @@ fn convert_number(num: u64, map: &Vec<Vec<u64>>) -> u64 {
     num
 }
 
-fn find_closest(maps: &[Vec<Vec<u64>>; 7], start: u64, end: u64) -> u64 {
+fn find_closest(maps: [Vec<Vec<u64>>; 7], start: u64, end: u64) -> u64 {
     let mut min = 0;
-    for map in maps {
-        for seed in start..end {
-            let location = convert_number(seed, map);
-            if location < min || min == 0 {
-                min = location;
-            }
+    for seed in start..end {
+        let mut location = seed;
+        for map in &maps {
+            location = convert_number(location, map);
+        }
+        if location < min || min == 0 {
+            min = location;
         }
     }
-
     min
 }
 
@@ -71,13 +73,23 @@ fn main() {
         .collect();
     let almanac = Almanac::parse_almanac(maps);
     let ranges = almanac.seeds;
-    let range_count = ranges.len() / 2;
+    let thread_count = ranges.len() / 2 - 1;
 
-    let mut locations: Vec<u64> = Vec::new();
-    for i in 0..range_count {
+    let mut handles: Vec<JoinHandle<u64>> = Vec::new();
+    for i in 0..thread_count {
         let start = ranges[2 * i];
         let end = start + ranges[2 * i + 1];
-        locations.push(find_closest(&almanac.maps, start, end));
+        let maps = almanac.maps.clone();
+        handles.push(thread::spawn(move || find_closest(maps, start, end)));
+    }
+
+    let start = ranges[2 * thread_count];
+    let end = start + ranges[2 * thread_count + 1];
+    let mut locations: Vec<u64> = Vec::new();
+    locations.push(find_closest(almanac.maps, start, end));
+
+    for handle in handles {
+        locations.push(handle.join().unwrap());
     }
 
     println!("{}", locations.iter().min().unwrap());
