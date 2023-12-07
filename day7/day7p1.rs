@@ -14,7 +14,7 @@ impl Hand {
         let bid: u32 = line.next().unwrap().parse().unwrap();
 
         let mut cards: Vec<u32> = Vec::new();
-        let mut counts: [u32; 14] = [0; 14];
+        let mut counts: [u32; 13] = [0; 13];
 
         for char in hand_str.chars() {
             let card: u32 = match char {
@@ -25,7 +25,7 @@ impl Hand {
                 'T' => 10,
                 num => num.to_digit(10).unwrap(),
             };
-            counts[(card - 1) as usize] += 1;
+            counts[(card - 2) as usize] += 1;
             cards.push(card);
         }
 
