@@ -21,7 +21,7 @@ fn extrapolate_value(nums: Vec<i64>) -> i64 {
         difs.push(nums[i] - nums[i - 1]);
     }
 
-    nums.last().unwrap() + extrapolate_value(difs)
+    nums[0] - extrapolate_value(difs)
 }
 
 fn main() {
