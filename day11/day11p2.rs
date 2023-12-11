@@ -39,7 +39,7 @@ fn get_distance_sum(map: Vec<Vec<char>>) -> usize {
                             let d_x = ord_l - ord_j;
                             let empty_rows = get_empty_count(i, k, &rows);
                             let empty_columns = get_empty_count(ord_j, ord_l, &columns);
-                            sum += d_y + empty_columns + d_x + empty_rows;
+                            sum += d_y + empty_columns * 999999 + d_x + empty_rows * 999999;
                         }
                     }
                 }
