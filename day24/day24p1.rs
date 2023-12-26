@@ -21,19 +21,38 @@ impl Line {
     }
 }
 
-fn intersects(l1: &Line, l2: &Line) -> u64 {
-    let t_x = (l1.x - l2.x) / (l2.v_x - l1.v_x);
-    let t_y = (l1.y - l2.y) / (l2.v_y - l1.v_y);
+fn check_test_area(x: f64, y: f64) -> bool {
+    const TEST_AREA_MIN: f64 = 200000000000000.0;
+    const TEST_AREA_MAX: f64 = 400000000000000.0;
 
-    if t_x == t_y && t_x <= 400000000000000.0 && t_x >= 200000000000000.0 {
-        return 1;
+    x >= TEST_AREA_MIN && y >= TEST_AREA_MIN && x <= TEST_AREA_MAX && y <= TEST_AREA_MAX
+}
+
+fn same_sign(i: f64, j: f64) -> bool {
+    (i < 0.0 && j < 0.0) || (i > 0.0 && j > 0.0)
+}
+
+fn intersects(l1: &Line, l2: &Line) -> bool {
+    let a1 = (l1.y - (l1.y + l1.v_y)) / (l1.x - (l1.x + l1.v_x));
+    let a2 = (l2.y - (l2.y + l2.v_y)) / (l2.x - (l2.x + l2.v_x));
+
+    let b1 = l1.y - a1 * l1.x;
+    let b2 = l2.y - a2 * l2.x;
+
+    if a1 != a2 {
+        let x = (b2 - b1) / (a1 - a2);
+        let y = x * a1 + b1;
+
+        if same_sign(x - l1.x, l1.v_x) && same_sign(x - l2.x, l2.v_x) {
+            return check_test_area(x, y);
+        }
     }
 
-    0
+    false
 }
 
 fn main() {
-    let document = fs::read_to_string("test.in").unwrap();
+    let document = fs::read_to_string("day24.in").unwrap();
     let mut lines: Vec<Line> = Vec::new();
 
     for data in document.lines() {
@@ -44,7 +63,9 @@ fn main() {
     let mut sum = 0;
     for i in 0..len {
         for j in (i + 1)..len {
-            sum += intersects(&lines[i], &lines[j]);
+            if intersects(&lines[i], &lines[j]) {
+                sum += 1;
+            }
         }
     }
 
