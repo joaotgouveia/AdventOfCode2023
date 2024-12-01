@@ -1,13 +1,14 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <set>
 #include <string>
 
 int main() {
     std::ifstream input("day01/day01.in");
-    std::multiset<int> left;
-    std::multiset<int> right;
+    std::multiset<size_t> left;
+    std::multiset<size_t> right;
 
     while (input.good()) {
         std::string sleft;
@@ -19,10 +20,7 @@ int main() {
         right.insert(std::stoi(sright));
     }
 
-    int distance = 0;
-    for (auto l = left.begin(), r = right.begin();
-         l != left.end() && r != right.end(); ++l, ++r) {
-        distance += std::abs(*l - *r);
-    }
-    std::cout << distance << "\n";
+    auto score = [right](int a, int b) { return a + (b * right.count(b)); };
+    const int similarity = std::accumulate(left.begin(), left.end(), 0, score);
+    std::cout << similarity << "\n";
 }
