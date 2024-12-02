@@ -10,7 +10,7 @@ namespace {
 bool is_safe(const std::vector<int>& report, bool removedlevel) {
     bool safe = true;
     const bool increasing = report[0] - report[1] < 0;
-    std::vector<int> badlevels = {0, 1};
+    std::vector<int> badlevels = {0};
 
     for (int i = 0; i < report.size() - 1; ++i) {
         const int distance = report[i] - report[i + 1];
