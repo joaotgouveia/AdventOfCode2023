@@ -6,6 +6,7 @@ project(
     LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+set(DAY "" CACHE PATH "Only build the solutions for a specific day.")
 
 find_program(CLANG_TIDY NAMES "clang-tidy")
 if(CLANG_TIDY)
@@ -20,7 +21,10 @@ if(CPPCHECK)
         "--enable=warning,style,performance")
 endif()
 
-file(GLOB DAYS day*)
-foreach(DAY IN ITEMS ${DAYS})
-    add_subdirectory(${DAY})
-endforeach()
+if(DAY)
+  add_subdirectory(${DAY})
+else()
+  add_subdirectory(day01)
+  add_subdirectory(day02)
+  add_subdirectory(day03)
+endif()
