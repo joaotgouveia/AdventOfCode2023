@@ -39,13 +39,11 @@ bool is_safe(const std::vector<int>& report, bool removedlevel) {
 int main() {
     std::ifstream input("day02/day02.in");
     std::vector<std::vector<int>> reports;
-    std::string line;
 
-    while (std::getline(input, line).good()) {
-        std::string data;
+    for (std::string line; std::getline(input, line);) {
         std::vector<int> report;
         std::stringstream stream(line + ' ');
-        while (std::getline(stream, data, ' ').good()) {
+        for (std::string data; std::getline(stream, data, ' ');) {
             report.push_back(std::stoi(data));
         }
         reports.push_back(report);
